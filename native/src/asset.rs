@@ -161,19 +161,6 @@ declare_types! {
             asset_cmp!(cx, eq)
         }
 
-        /*method has_bal(mut cx) {
-            match {
-                let this = cx.this();
-                let guard = cx.lock();
-                let asset = this.borrow(&guard);
-            } {
-                Some(asset) => {
-                    Ok(JsBoolean::new(asset.amount > 0).upcast())
-                },
-                None => Ok(JsUndefined::new().upcast())
-            }
-        }*/
-
         method to_string(mut cx) {
             let s = {
                 let this = cx.this();
