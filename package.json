@@ -1,0 +1,18 @@
+{
+  "name": "godcoin-neon",
+  "version": "0.0.1",
+  "description": "GODcoin native NodeJS bindings",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GODcoin/GODcoin-neon"
+  },
+  "author": "samrg472 <samrg472@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "neon-cli": "^0.2.0"
+  },
+  "scripts": {
+    "install": "neon build"
+  }
+}

@@ -1,0 +1,10 @@
+.vscode
+.DS_Store
+
+native/index.node
+native/artifacts.json
+Cargo.lock
+target
+
+node_modules
+yarn.lock
