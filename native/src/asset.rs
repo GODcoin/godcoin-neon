@@ -71,7 +71,7 @@ declare_types! {
         init(mut cx) {
             let amt = cx.argument::<JsNumber>(0)?.value() as i64;
             let dec = cx.argument::<JsNumber>(1)?.value() as u8;
-            if dec > 8 { return cx.throw_error("precision too high") }
+            if dec > ::godcoin::asset::MAX_PRECISION { return cx.throw_error("precision too high") }
             let sym = match cx.argument::<JsNumber>(2)?.value() as u8 {
                 0 => AssetSymbol::GOLD,
                 1 => AssetSymbol::SILVER,
