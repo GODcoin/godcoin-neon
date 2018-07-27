@@ -84,6 +84,29 @@ declare_types! {
             })
         }
 
+        constructor(mut cx) {
+            let asset = {
+                let this = cx.this();
+                let guard = cx.lock();
+                let asset = this.borrow(&guard);
+                (asset.amount, asset.decimals, asset.symbol)
+            };
+
+            let amt = cx.number(asset.0 as f64);
+            let dec = cx.number(asset.1);
+            let symbol = cx.number(match asset.2 {
+                AssetSymbol::GOLD => 0,
+                AssetSymbol::SILVER => 1,
+            });
+
+            let obj = cx.empty_object();
+            obj.set(&mut cx, "amount", amt)?;
+            obj.set(&mut cx, "decimals", dec)?;
+            obj.set(&mut cx, "symbol", symbol)?;
+
+            Ok(Some(obj))
+        }
+
         method add(mut cx) {
             asset_arithmetic!(cx, add)
         }
@@ -137,6 +160,19 @@ declare_types! {
         method eq(mut cx) {
             asset_cmp!(cx, eq)
         }
+
+        /*method has_bal(mut cx) {
+            match {
+                let this = cx.this();
+                let guard = cx.lock();
+                let asset = this.borrow(&guard);
+            } {
+                Some(asset) => {
+                    Ok(JsBoolean::new(asset.amount > 0).upcast())
+                },
+                None => Ok(JsUndefined::new().upcast())
+            }
+        }*/
 
         method to_string(mut cx) {
             let s = {
