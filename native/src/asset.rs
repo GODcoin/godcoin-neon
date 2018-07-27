@@ -99,12 +99,12 @@ declare_types! {
                 AssetSymbol::SILVER => 1,
             });
 
-            let obj = cx.empty_object();
-            obj.set(&mut cx, "amount", amt)?;
-            obj.set(&mut cx, "decimals", dec)?;
-            obj.set(&mut cx, "symbol", symbol)?;
+            let obj = cx.this();
+            (*obj).set(&mut cx, "amount", amt)?;
+            (*obj).set(&mut cx, "decimals", dec)?;
+            (*obj).set(&mut cx, "symbol", symbol)?;
 
-            Ok(Some(obj))
+            Ok(Some(obj.upcast()))
         }
 
         method add(mut cx) {
