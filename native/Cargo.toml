@@ -14,5 +14,5 @@ crate-type = ["dylib"]
 neon-build = "0.2.0"
 
 [dependencies]
-godcoin = { git = "https://github.com/GODcoin/godcoin-rs.git" }
+godcoin = { git = "https://github.com/GODcoin/godcoin-rs.git", rev = "966b7d1" }
 neon = "0.2.0"
