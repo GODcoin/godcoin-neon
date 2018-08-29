@@ -25,6 +25,19 @@ declare_types! {
             }
         }
 
+        method equals(mut cx) {
+            let cmp = {
+                let other = cx.argument::<JsPublicKey>(0)?;
+                let this = cx.this();
+                let guard = cx.lock();
+                let key = this.borrow(&guard);
+                let other = other.borrow(&guard);
+
+                *key == *other
+            };
+            Ok(cx.boolean(cmp).upcast())
+        }
+
         method verify(mut cx) {
             let sig = cx.argument::<JsBuffer>(0)?;
             let msg = cx.argument::<JsBuffer>(1)?;
@@ -47,7 +60,7 @@ declare_types! {
                 let key = this.borrow(&guard);
                 key.verify(data.1, &sig)
             };
-            Ok(JsBoolean::new(&mut cx, verified).upcast())
+            Ok(cx.boolean(verified).upcast())
         }
 
         method to_wif(mut cx) {

@@ -28,6 +28,13 @@ it('should import keys', () => {
   expect(pair[1].toWif()).to.eq('3GAD3otqozDorfu1iDpMQJ1gzWp8PRFEjVHZivZdedKW3i3KtM');
 });
 
+it('should compare keys', () => {
+  const a = PrivateKey.genKeyPair();
+  const b = PrivateKey.genKeyPair();
+  expect(a[0].equals(a[0])).to.be.true;
+  expect(a[0].equals(b[0])).to.be.false;
+});
+
 it('should throw on invalid key', () => {
   expect(() => {
     PrivateKey.fromWif('');
