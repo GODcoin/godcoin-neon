@@ -10,9 +10,14 @@ exclude = ["artifacts.json", "index.node"]
 name = "neon"
 crate-type = ["dylib"]
 
+[profile.release]
+debug = true
+
 [build-dependencies]
 neon-build = "0.2.0"
 
 [dependencies]
-godcoin = { git = "https://github.com/GODcoin/godcoin-rs.git", rev = "182075b" }
+godcoin = { git = "https://github.com/GODcoin/godcoin-rs.git", rev = "54e66fb" }
+log = "0.4.4"
 neon = "0.2.0"
+sodiumoxide = { version = "0.1.0", default-features = false, features = ["std"] }

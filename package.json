@@ -13,6 +13,12 @@
     "neon-cli": "^0.2.0"
   },
   "scripts": {
-    "install": "neon build"
+    "install": "neon build",
+    "test": "neon build && mocha test/index.js"
+  },
+  "devDependencies": {
+    "bs58": "^4.0.1",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0"
   }
 }
