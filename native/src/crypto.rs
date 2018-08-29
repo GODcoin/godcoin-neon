@@ -25,6 +25,24 @@ declare_types! {
             }
         }
 
+        constructor(mut cx) {
+            let mut buf = cx.buffer(PUBLICKEYBYTES as u32)?;
+            {
+                let this = cx.this();
+
+                let guard = cx.lock();
+                let data = buf.borrow_mut(&guard).as_mut_slice::<u8>();
+                let key = this.borrow(&guard);
+
+                data.copy_from_slice(key.as_bytes());
+            }
+
+            let obj = cx.this();
+            (*obj).set(&mut cx, "buffer", buf)?;
+
+            Ok(Some(obj.upcast()))
+        }
+
         method equals(mut cx) {
             let cmp = {
                 let other = cx.argument::<JsPublicKey>(0)?;

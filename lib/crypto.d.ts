@@ -6,6 +6,8 @@ export class PublicKey {
 
   constructor(key: Buffer);
 
+  readonly buffer: Buffer;
+
   verify(sig: Buffer, msg: Buffer): boolean;
   equals(other: PublicKey): boolean;
   toWif(): string;

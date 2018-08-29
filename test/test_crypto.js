@@ -9,6 +9,7 @@ it('should create keys', () => {
   const keys = PrivateKey.genKeyPair();
   expect(keys[0] instanceof PublicKey).to.be.true;
   expect(keys[1] instanceof PrivateKey).to.be.true;
+  expect(keys[0].buffer).to.exist;
 });
 
 it('should import keys', () => {
