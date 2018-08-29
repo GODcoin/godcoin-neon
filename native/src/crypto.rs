@@ -6,7 +6,7 @@ use neon::prelude::*;
 declare_types! {
     pub class JsPublicKey for PublicKey {
         init(mut cx) {
-            let key = cx.argument::<JsArrayBuffer>(0)?;
+            let key = cx.argument::<JsBuffer>(0)?;
             let len = {
                 let guard = cx.lock();
                 let bytes = key.borrow(&guard);
@@ -81,7 +81,7 @@ pub fn public_key_from_wif(mut cx: FunctionContext) -> JsResult<JsPublicKey> {
         Ok(key) => {
             let bytes = key.as_bytes();
             let buf = {
-                let mut buf = cx.array_buffer(bytes.len() as u32)?;
+                let mut buf = cx.buffer(bytes.len() as u32)?;
                 {
                     let guard = cx.lock();
                     let data = buf.borrow_mut(&guard).as_mut_slice::<u8>();
@@ -98,8 +98,8 @@ pub fn public_key_from_wif(mut cx: FunctionContext) -> JsResult<JsPublicKey> {
 declare_types! {
     pub class JsPrivateKey for PrivateKey {
         init(mut cx) {
-            let seed = cx.argument::<JsArrayBuffer>(0)?;
-            let secret = cx.argument::<JsArrayBuffer>(1)?;
+            let seed = cx.argument::<JsBuffer>(0)?;
+            let secret = cx.argument::<JsBuffer>(1)?;
 
             let seed_len = {
                 let guard = cx.lock();
@@ -172,7 +172,7 @@ pub fn private_key_from_wif(mut cx: FunctionContext) -> JsResult<JsArray> {
         Ok(key) => {
             let pub_key = {
                 let bytes = key.0.as_bytes();
-                let mut buf = cx.array_buffer(bytes.len() as u32)?;
+                let mut buf = cx.buffer(bytes.len() as u32)?;
                 {
                     let guard = cx.lock();
                     let data = buf.borrow_mut(&guard).as_mut_slice::<u8>();
@@ -183,8 +183,8 @@ pub fn private_key_from_wif(mut cx: FunctionContext) -> JsResult<JsArray> {
 
             let priv_key = {
                 let bytes = key.1.as_bytes();
-                let mut seed_buf = cx.array_buffer(bytes.0.len() as u32)?;
-                let mut priv_buf = cx.array_buffer(bytes.1.len() as u32)?;
+                let mut seed_buf = cx.buffer(bytes.0.len() as u32)?;
+                let mut priv_buf = cx.buffer(bytes.1.len() as u32)?;
                 {
                     let guard = cx.lock();
                     let seed_bytes = seed_buf.borrow_mut(&guard).as_mut_slice();
@@ -210,7 +210,7 @@ pub fn private_key_gen_key_pair(mut cx: FunctionContext) -> JsResult<JsArray> {
 
     let pub_key = {
         let bytes = key.0.as_bytes();
-        let mut buf = cx.array_buffer(bytes.len() as u32)?;
+        let mut buf = cx.buffer(bytes.len() as u32)?;
         {
             let guard = cx.lock();
             let data = buf.borrow_mut(&guard).as_mut_slice::<u8>();
@@ -221,8 +221,8 @@ pub fn private_key_gen_key_pair(mut cx: FunctionContext) -> JsResult<JsArray> {
 
     let priv_key = {
         let bytes = key.1.as_bytes();
-        let mut seed_buf = cx.array_buffer(bytes.0.len() as u32)?;
-        let mut priv_buf = cx.array_buffer(bytes.1.len() as u32)?;
+        let mut seed_buf = cx.buffer(bytes.0.len() as u32)?;
+        let mut priv_buf = cx.buffer(bytes.1.len() as u32)?;
         {
             let guard = cx.lock();
             let seed_bytes = seed_buf.borrow_mut(&guard).as_mut_slice();

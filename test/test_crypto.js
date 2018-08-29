@@ -77,14 +77,14 @@ it('should properly sign and validate', () => {
 
 it('should throw on invalid key lengths', () => {
   expect(() => {
-    new PrivateKey(new ArrayBuffer(32), new ArrayBuffer(32));
+    new PrivateKey(Buffer.alloc(32), Buffer.alloc(32));
   }).to.throw(Error, 'invalid secret len');
 
   expect(() => {
-    new PrivateKey(new ArrayBuffer(64), new ArrayBuffer(16));
+    new PrivateKey(new Buffer.alloc(64), new Buffer.alloc(16));
   }).to.throw(Error, 'invalid seed len');
 
   expect(() => {
-    new PublicKey(new ArrayBuffer(64));
+    new PublicKey(new Buffer.alloc(64));
   }).to.throw(Error, 'invalid buffer len');
 });

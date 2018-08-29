@@ -3,7 +3,7 @@ export type KeyPair = [PublicKey, PrivateKey];
 export class PublicKey {
   static fromWif(wif: string): PublicKey;
 
-  constructor(key: ArrayBuffer);
+  constructor(key: Buffer);
 
   verify(sig: Buffer, msg: Buffer): boolean;
   equals(other: PublicKey): boolean;
@@ -14,7 +14,7 @@ export class PrivateKey {
   static fromWif(wif: string): KeyPair;
   static genKeyPair(): KeyPair;
 
-  constructor(seed: ArrayBuffer, secret: ArrayBuffer);
+  constructor(seed: Buffer, secret: Buffer);
 
   sign(msg: Buffer): Buffer;
   toWif(): string;
