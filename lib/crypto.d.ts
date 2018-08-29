@@ -1,4 +1,5 @@
 export type KeyPair = [PublicKey, PrivateKey];
+export type SigPair = [PublicKey, Buffer];
 
 export class PublicKey {
   static fromWif(wif: string): PublicKey;
