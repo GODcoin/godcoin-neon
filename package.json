@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "GODcoin native NodeJS bindings",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/GODcoin/GODcoin-neon"
