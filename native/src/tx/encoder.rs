@@ -19,9 +19,9 @@ pub fn tx_encode(mut cx: FunctionContext) -> JsResult<JsBuffer> {
                                 .downcast_or_throw::<JsObject, _>(&mut cx)?;
             let func = date.get(&mut cx, "getTime")?
                                 .downcast_or_throw::<JsFunction, _>(&mut cx)?;
-            func.call::<_, _, JsValue, _>(&mut cx, date, vec![])?
+            (func.call::<_, _, JsValue, _>(&mut cx, date, vec![])?
                 .downcast_or_throw::<JsNumber, _>(&mut cx)?
-                .value() / 1000f64
+                .value() / 1000f64).floor()
 		};
 		let fee = object.get(&mut cx, "fee")?
                         .downcast_or_throw::<JsAsset, _>(&mut cx)?;
@@ -156,9 +156,9 @@ pub fn tx_encode_with_sigs(mut cx: FunctionContext) -> JsResult<JsBuffer> {
                                 .downcast_or_throw::<JsObject, _>(&mut cx)?;
             let func = date.get(&mut cx, "getTime")?
                             .downcast_or_throw::<JsFunction, _>(&mut cx)?;
-            func.call::<_, _, JsValue, _>(&mut cx, date, vec![])?
+            (func.call::<_, _, JsValue, _>(&mut cx, date, vec![])?
                 .downcast_or_throw::<JsNumber, _>(&mut cx)?
-                .value() / 1000f64
+                .value() / 1000f64).floor()
 		};
 
 		let fee = object.get(&mut cx, "fee")?
