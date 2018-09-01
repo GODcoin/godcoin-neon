@@ -4,11 +4,14 @@ extern crate godcoin;
 
 use neon::prelude::*;
 
-mod asset;
+#[macro_use] mod asset;
 use asset::*;
 
 mod crypto;
 use crypto::*;
+
+mod tx;
+use tx::*;
 
 fn init(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     if godcoin::init().is_ok() { Ok(JsUndefined::new()) }
@@ -27,6 +30,10 @@ register_module!(mut cx, {
     cx.export_class::<JsPrivateKey>("PrivateKey")?;
     cx.export_function("PrivateKey_from_wif", private_key_from_wif)?;
     cx.export_function("PrivateKey_gen_key_pair", private_key_gen_key_pair)?;
+
+    cx.export_function("Tx_encode", tx_encode)?;
+    cx.export_function("Tx_encode_with_sigs", tx_encode_with_sigs)?;
+    cx.export_function("Tx_decode_with_sigs", tx_decode_with_sigs)?;
 
     Ok(())
 });
