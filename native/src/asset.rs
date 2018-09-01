@@ -2,14 +2,11 @@ use godcoin::{Asset, AssetSymbol};
 use neon::prelude::*;
 
 macro_rules! asset_to_js {
-    ($cx:expr, $asset:ident) => {
+    ($cx:expr, $asset:expr) => {
         {
             let amount = $cx.number($asset.amount as f64);
             let decimals = $cx.number($asset.decimals);
-            let symbol = match $asset.symbol {
-                AssetSymbol::GOLD => $cx.number(0),
-                AssetSymbol::SILVER => $cx.number(1)
-            };
+            let symbol = $cx.number($asset.symbol as u8);
             JsAsset::new(&mut $cx, vec![amount, decimals, symbol])?
         }
     }
@@ -166,7 +163,7 @@ declare_types! {
                 let this = cx.this();
                 let guard = cx.lock();
                 let asset = this.borrow(&guard);
-                asset.to_str()
+                asset.to_string()
             };
             Ok(JsString::new(&mut cx, s).upcast())
         }
