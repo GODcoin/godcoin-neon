@@ -1,7 +1,15 @@
 import { KeyPair, SigPair } from './crypto';
 import { Tx } from './tx';
 
-export class Block {
+export interface BlockData {
+    height: number;
+    previous_hash: Buffer;
+    timestamp: Date;
+    transactions: Tx[];
+    tx_merkle_root?: Buffer;
+}
+
+export class Block implements BlockData {
     static calcMerkleRoot(txArray: Tx[]): Buffer;
 
     height: number;
@@ -10,7 +18,7 @@ export class Block {
     transactions: Tx[];
     tx_merkle_root: Buffer;
 
-    constructor(data: any);
+    constructor(data: BlockData);
 
     verifyMerkleRoot(): boolean;
     encodeHeader(): Buffer;
@@ -19,12 +27,16 @@ export class Block {
     toString(): string;
 }
 
-export class SignedBlock extends Block {
+export interface SignedBlockData extends BlockData {
+    sig_pair: SigPair;
+}
+
+export class SignedBlock extends Block implements BlockData {
     static decodeWithTx(buf: Buffer): SignedBlock;
 
     sig_pair: SigPair;
 
-    constructor(data: any);
+    constructor(data: SignedBlockData);
 
     encodeWithTx(): Buffer;
 }
