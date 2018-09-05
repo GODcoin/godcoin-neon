@@ -7,6 +7,7 @@ export class Block {
     height: number;
     previous_hash: Buffer;
     timestamp: Date;
+    transactions: Tx[];
     tx_merkle_root: Buffer;
 
     constructor(data: any);
