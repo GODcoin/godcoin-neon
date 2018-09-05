@@ -1,4 +1,5 @@
 import { KeyPair } from './crypto';
+import { Tx } from './tx';
 
 export class Block {
     static calcMerkleRoot(txArray: Tx[]): Buffer;
@@ -8,7 +9,7 @@ export class Block {
     timestamp: Date;
     tx_merkle_root: Buffer;
 
-    private constructor(data: any);
+    constructor(data: any);
 
     verifyMerkleRoot(): boolean;
     encodeHeader(): Buffer;
@@ -21,7 +22,7 @@ export class SignedBlock extends Block {
 
     sig_pair: Buffer;
 
-    private constructor(data: any);
+    constructor(data: any);
 
     encodeWithTx(): Buffer;
 }

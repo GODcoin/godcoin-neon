@@ -16,7 +16,7 @@ export interface TxData {
 export class Tx {
     static decodeWithSigs<T extends Tx>(buffer): T|null;
 
-    private constructor(type: TxType, data: any);
+    constructor(type: TxType, data: any);
 
     appendSign(keyPair: KeyPair): Tx;
 
