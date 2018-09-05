@@ -7,7 +7,7 @@ const {
     Asset
 } = require('../lib');
 
-it('should serialize blocks', () => {
+it('should encode blocks', () => {
     const keys = PrivateKey.genKeyPair();
     const genesisTs = new Date();
     const genesisBlock = new Block({
