@@ -22,3 +22,5 @@ export class PrivateKey {
   sign(msg: Buffer): Buffer;
   toWif(): string;
 }
+
+export function doubleSha256(val: Buffer|string): Buffer;

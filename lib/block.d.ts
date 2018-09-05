@@ -14,6 +14,7 @@ export class Block {
 
     verifyMerkleRoot(): boolean;
     encodeHeader(): Buffer;
+    calcHash(): Buffer;
     sign(pair: KeyPair): SignedBlock;
     toString(): string;
 }
