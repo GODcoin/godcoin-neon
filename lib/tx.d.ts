@@ -13,8 +13,12 @@ export interface TxData {
     signature_pairs: SigPair[];
 }
 
-export class Tx {
+export class Tx implements TxData {
     static decodeWithSigs<T extends Tx>(buffer): T|null;
+
+    timestamp: Date;
+    fee: Asset;
+    signature_pairs: SigPair[];
 
     constructor(type: TxType, data: any);
 
@@ -29,7 +33,14 @@ export interface RewardTxData extends TxData {
     rewards: Asset[];
 }
 
-export class RewardTx extends Tx {
+export class RewardTx extends Tx implements RewardTxData {
+    timestamp: Date;
+    fee: Asset;
+    signature_pairs: SigPair[];
+
+    to: PublicKey;
+    rewards: Asset[];
+
     constructor(data: RewardTxData);
 }
 
@@ -40,7 +51,16 @@ export interface BondTxData extends TxData {
     bond_fee: Asset;
 }
 
-export class BondTx extends Tx {
+export class BondTx extends Tx implements BondTxData {
+    timestamp: Date;
+    fee: Asset;
+    signature_pairs: SigPair[];
+
+    minter: PublicKey;
+    staker: PublicKey;
+    stake_amt: Asset;
+    bond_fee: Asset;
+
     constructor(data: BondTxData);
 }
 
@@ -51,6 +71,15 @@ export interface TransferTxData extends TxData {
     memo: Buffer;
 }
 
-export class TransferTx extends Tx {
+export class TransferTx extends Tx implements TransferTxData {
+    timestamp: Date;
+    fee: Asset;
+    signature_pairs: SigPair[];
+
+    from: PublicKey;
+    to: PublicKey;
+    amount: Asset;
+    memo: Buffer;
+
     constructor(data: TransferTxData);
 }
