@@ -1,4 +1,4 @@
-import { KeyPair } from './crypto';
+import { KeyPair, SigPair } from './crypto';
 import { Tx } from './tx';
 
 export class Block {
@@ -22,7 +22,7 @@ export class Block {
 export class SignedBlock extends Block {
     static decodeWithTx(buf: Buffer): SignedBlock;
 
-    sig_pair: Buffer;
+    sig_pair: SigPair;
 
     constructor(data: any);
 
