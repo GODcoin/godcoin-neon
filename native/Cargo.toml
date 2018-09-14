@@ -18,7 +18,8 @@ neon-build = "0.2.0"
 
 [dependencies]
 futures = "0.1.24"
-godcoin = { git = "https://github.com/GODcoin/godcoin-rs.git", rev = "5e7678e" }
+godcoin = { git = "https://github.com/GODcoin/godcoin-rs.git", rev = "b59303b" }
+parking_lot = "0.6.4"
 log = "0.4.4"
 neon = "0.2.0"
 sodiumoxide = { version = "0.1.0", default-features = false, features = ["std"] }
