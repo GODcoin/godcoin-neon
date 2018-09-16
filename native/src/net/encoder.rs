@@ -16,8 +16,10 @@ pub fn encode(mut cx: FunctionContext) -> JsResult<JsValue> {
         match msg_type {
             t if t == MsgType::NONE as u8 => None,
             t if t == MsgType::HANDSHAKE as u8 => {
+                let obj = obj.get(&mut cx, "data")?
+                                .downcast_or_throw::<JsObject, _>(&mut cx)?;
                 let peer_type = obj.get(&mut cx, "peer_type")?
-                                        .downcast_or_throw::<JsNumber, _>(&mut cx)?.value() as u8;
+                                    .downcast_or_throw::<JsNumber, _>(&mut cx)?.value() as u8;
                 let peer_type = match peer_type {
                     t if t == PeerType::NODE as u8 => PeerType::NODE,
                     t if t == PeerType::WALLET as u8 => PeerType::WALLET,
