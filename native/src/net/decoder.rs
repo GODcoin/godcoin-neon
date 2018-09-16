@@ -21,8 +21,8 @@ declare_types! {
             })
         }
 
-        method decode(mut cx) {
-            let payload = {
+        method update(mut cx) {
+            {
                 let node_buf = cx.argument::<JsBuffer>(0)?;
                 let mut this = cx.this();
                 let guard = cx.lock();
@@ -31,6 +31,18 @@ declare_types! {
                 let node_buf = node_buf.borrow(&guard);
                 let buf = this.buf.take().unwrap();
                 buf.borrow_mut().extend_from_slice(node_buf.as_slice());
+                this.buf = Some(buf);
+            }
+            Ok(cx.undefined().upcast())
+        }
+
+        method decode(mut cx) {
+            let payload = {
+                let mut this = cx.this();
+                let guard = cx.lock();
+                let mut this = this.borrow_mut(&guard);
+
+                let buf = this.buf.take().unwrap();
                 let payload = this.inner.decode(&mut *buf.borrow_mut());
                 this.buf = Some(buf);
                 payload
