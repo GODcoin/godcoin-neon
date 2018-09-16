@@ -17,9 +17,11 @@ debug = true
 neon-build = "0.2.0"
 
 [dependencies]
+bytes = "0.4.9"
 futures = "0.1.24"
-godcoin = { git = "https://github.com/GODcoin/godcoin-rs.git", rev = "b59303b" }
+godcoin = { git = "https://github.com/GODcoin/godcoin-rs.git", rev = "8c4c714" }
 parking_lot = "0.6.4"
 log = "0.4.4"
 neon = "0.2.0"
 sodiumoxide = { version = "0.1.0", default-features = false, features = ["std"] }
+tokio-codec = "0.1.0"

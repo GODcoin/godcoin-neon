@@ -1,6 +1,9 @@
 #[macro_use] extern crate neon;
+extern crate tokio_codec;
 extern crate sodiumoxide;
 extern crate godcoin;
+extern crate futures;
+extern crate bytes;
 
 use neon::prelude::*;
 
@@ -13,6 +16,9 @@ use crypto::*;
 
 #[macro_use] mod tx;
 mod block;
+
+mod net;
+use net::*;
 
 fn init(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     if godcoin::init().is_ok() { Ok(JsUndefined::new()) }
@@ -40,6 +46,9 @@ register_module!(mut cx, {
     cx.export_function("Block_encode_header", block::encoder::block_encode_header)?;
     cx.export_function("SignedBlock_encode_with_tx", block::encoder::signed_block_encode_with_tx)?;
     cx.export_function("SignedBlock_decode_with_tx", block::decoder::signed_block_decode_with_tx)?;
+
+    cx.export_class::<decoder::JsRpcCodec>("Net_RpcDecoder")?;
+    cx.export_function("Net_rpc_encoder", encoder::encode)?;
 
     Ok(())
 });
