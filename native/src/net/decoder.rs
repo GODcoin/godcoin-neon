@@ -5,6 +5,8 @@ use std::error::Error;
 use neon::prelude::*;
 use bytes::BytesMut;
 
+use super::constants::*;
+
 pub struct BufRpcCodec {
     inner: codec::RpcCodec,
     buf: Option<RefCell<BytesMut>>
@@ -37,10 +39,40 @@ declare_types! {
                 Ok(payload) => {
                     if let Some(payload) = payload {
                         let id = cx.number(payload.id);
-                        // TODO add the rpc payload to the object
+                        let msg = if let Some(msg) = payload.msg {
+                            match msg {
+                                RpcMsg::Handshake(hs) => {
+                                    let msg_type = cx.number(MsgType::HANDSHAKE as u8);
+                                    let peer_type = cx.number(hs.peer_type as u8);
+                                    let obj = cx.empty_object();
+                                    obj.set(&mut cx, "peer_type", peer_type)?;
+                                    Some((msg_type, Some(obj)))
+                                },
+                                RpcMsg::Properties(props) => {
+                                    let msg_type = cx.number(MsgType::PROPERTIES as u8);
+                                    if let Some(props) = props {
+                                       let height = cx.number(props.height as f64);
+                                        let obj = cx.empty_object();
+                                        obj.set(&mut cx, "height", height)?;
+                                        Some((msg_type, Some(obj)))
+                                    } else {
+                                        Some((msg_type, None))
+                                    }
+                                }
+                            }
+                        } else {
+                            None
+                        };
+
                         let obj = cx.empty_object();
                         obj.set(&mut cx, "id", id)?;
-
+                        if let Some(msg) = msg {
+                            let (msg_type, data) = msg;
+                            obj.set(&mut cx, "msg_type", msg_type)?;
+                            if let Some(data) = data {
+                                obj.set(&mut cx, "data", data)?;
+                            }
+                        }
                         Ok(obj.upcast())
                     } else {
                         Ok(JsUndefined::new().upcast())
