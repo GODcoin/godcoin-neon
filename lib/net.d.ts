@@ -44,7 +44,7 @@ export interface RpcMsgProperties extends RpcMsg {
 }
 
 export interface RpcMsgEvent extends RpcMsg {
-  type: 'tx' | 'block';
+  type: RpcEventType;
   subscribe?: boolean;
   data?: Tx | SignedBlock;
 }
