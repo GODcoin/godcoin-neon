@@ -81,24 +81,14 @@ declare_types! {
                                         RpcEvent::Tx(tx) => {
                                             let s = cx.string("tx");
                                             obj.set(&mut cx, "type", s)?;
-                                            if let Some(tx) = tx {
-                                                let tx = tx_variant_to_js!(cx, tx);
-                                                obj.set(&mut cx, "data", tx)?;
-                                            } else {
-                                                let b = cx.boolean(true);
-                                                obj.set(&mut cx, "subscribe", b)?;
-                                            }
+                                            let tx = tx_variant_to_js!(cx, tx);
+                                            obj.set(&mut cx, "data", tx)?;
                                         },
                                         RpcEvent::Block(block) => {
                                             let s = cx.string("block");
                                             obj.set(&mut cx, "type", s)?;
-                                            if let Some(block) = block {
-                                                let block = signed_block_to_js!(cx, block);
-                                                obj.set(&mut cx, "data", block)?;
-                                            } else {
-                                                let b = cx.boolean(true);
-                                                obj.set(&mut cx, "subscribe", b)?;
-                                            }
+                                            let block = signed_block_to_js!(cx, block);
+                                            obj.set(&mut cx, "data", block)?;
                                         }
                                     }
                                     Some((msg_type, Some(obj)))

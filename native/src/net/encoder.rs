@@ -56,34 +56,18 @@ pub fn encode(mut cx: FunctionContext) -> JsResult<JsValue> {
                 let event_type = obj.get(&mut cx, "type")?
                                     .downcast_or_throw::<JsString, _>(&mut cx)?
                                     .value();
-                let sub: bool = {
-                    let sub = obj.get(&mut cx, "subscribe")?;
-                    if sub.is_a::<JsBoolean>() {
-                        sub.downcast_or_throw::<JsBoolean, _>(&mut cx)?.value()
-                    } else {
-                        false
-                    }
-                };
                 match event_type.as_ref() {
                     "tx" => {
-                        if sub {
-                            Some(RpcMsg::Event(RpcEvent::Tx(None)))
-                        } else {
-                            let data = obj.get(&mut cx, "data")?
-                                            .downcast_or_throw::<JsObject, _>(&mut cx)?;
-                            let tx = read_js_obj_to_tx!(cx, data);
-                            Some(RpcMsg::Event(RpcEvent::Tx(Some(tx))))
-                        }
+                        let data = obj.get(&mut cx, "data")?
+                                        .downcast_or_throw::<JsObject, _>(&mut cx)?;
+                        let tx = read_js_obj_to_tx!(cx, data);
+                        Some(RpcMsg::Event(RpcEvent::Tx(tx)))
                     },
                     "block" => {
-                        if sub {
-                            Some(RpcMsg::Event(RpcEvent::Block(None)))
-                        } else {
-                            let data = obj.get(&mut cx, "data")?
-                                            .downcast_or_throw::<JsObject, _>(&mut cx)?;
-                            let block = read_js_obj_to_signed_block!(cx, data);
-                            Some(RpcMsg::Event(RpcEvent::Block(Some(block))))
-                        }
+                        let data = obj.get(&mut cx, "data")?
+                                        .downcast_or_throw::<JsObject, _>(&mut cx)?;
+                        let block = read_js_obj_to_signed_block!(cx, data);
+                        Some(RpcMsg::Event(RpcEvent::Block(block)))
                     },
                     _ => return cx.throw_error("invalid event type")
                 }

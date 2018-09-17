@@ -31,17 +31,6 @@ it('should encode and decode tx events', () => {
     const codec = new RpcCodec();
     codec.update(codec.encode(data));
     expect(data).to.eql(codec.decode());
-
-    data = {
-        id: 16,
-        msg_type: RpcMsgType.EVENT,
-        data: {
-            type: RpcEventType.TX,
-            subscribe: true
-        }
-    };
-    codec.update(codec.encode(data));
-    expect(data).to.eql(codec.decode());
 });
 
 it('should encode and decode block events', () => {
