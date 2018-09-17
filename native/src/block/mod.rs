@@ -1,5 +1,5 @@
-pub mod encoder;
+#[macro_use] pub mod encoder;
 pub use self::encoder::*;
 
-pub mod decoder;
+#[macro_use] pub mod decoder;
 pub use self::decoder::*;

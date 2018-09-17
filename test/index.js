@@ -12,8 +12,8 @@ describe('Tx', () => {
 
 describe('Block', () => {
     require('./test_block');
-})
+});
 
 describe('Net', () => {
-    require('./test_net');
-})
+    require('./net');
+});

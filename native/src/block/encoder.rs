@@ -9,7 +9,7 @@ use godcoin::tx::*;
 use crypto::JsPublicKey;
 use asset::JsAsset;
 
-macro_rules! read_block_to_rs {
+macro_rules! read_js_obj_to_block {
     ($cx:expr, $obj:expr) => {
         {
             let previous_hash = $obj.get(&mut $cx, "previous_hash")?
@@ -72,6 +72,21 @@ macro_rules! read_block_to_rs {
                 timestamp,
                 tx_merkle_root,
                 transactions
+            }
+        }
+    };
+}
+
+macro_rules! read_js_obj_to_signed_block {
+    ($cx:expr, $obj:expr) => {
+        {
+            let block = read_js_obj_to_block!($cx, $obj);
+            let sig_pair = $obj.get(&mut $cx, "sig_pair")?
+                                    .downcast_or_throw::<JsArray, _>(&mut $cx)?;
+            let sig_pair = js_sigpair_to_rs!($cx, sig_pair);
+            SignedBlock {
+                base: block,
+                sig_pair
             }
         }
     };
@@ -159,17 +174,8 @@ pub fn block_calc_tx_merkle_root(mut cx: FunctionContext) -> JsResult<JsBuffer> 
 }
 
 pub fn signed_block_encode_with_tx(mut cx: FunctionContext) -> JsResult<JsBuffer> {
-    let block = {
-        let object = cx.argument::<JsObject>(0)?;
-        let block = read_block_to_rs!(cx, object);
-        let sig_pair = object.get(&mut cx, "sig_pair")?
-                                .downcast_or_throw::<JsArray, _>(&mut cx)?;
-        let sig_pair = js_sigpair_to_rs!(cx, sig_pair);
-        SignedBlock {
-            base: block,
-            sig_pair
-        }
-    };
+    let obj = cx.argument::<JsObject>(0)?;
+    let block = read_js_obj_to_signed_block!(cx, obj);
 
     let mut vec = Vec::with_capacity(32768);
     block.encode_with_tx(&mut vec);

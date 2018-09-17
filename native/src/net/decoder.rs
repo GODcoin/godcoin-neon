@@ -1,11 +1,14 @@
+use godcoin::tx::TxVariant;
 use godcoin::net::rpc::*;
 use tokio_codec::Decoder;
+use crypto::JsPublicKey;
 use std::cell::RefCell;
 use std::error::Error;
 use neon::prelude::*;
 use bytes::BytesMut;
 
 use super::constants::*;
+use asset::JsAsset;
 
 pub struct BufRpcCodec {
     inner: codec::RpcCodec,
@@ -70,6 +73,35 @@ declare_types! {
                                     } else {
                                         Some((msg_type, None))
                                     }
+                                },
+                                RpcMsg::Event(event) => {
+                                    let msg_type = cx.number(MsgType::EVENT as u8);
+                                    let obj = cx.empty_object();
+                                    match event {
+                                        RpcEvent::Tx(tx) => {
+                                            let s = cx.string("tx");
+                                            obj.set(&mut cx, "type", s)?;
+                                            if let Some(tx) = tx {
+                                                let tx = tx_variant_to_js!(cx, tx);
+                                                obj.set(&mut cx, "data", tx)?;
+                                            } else {
+                                                let b = cx.boolean(true);
+                                                obj.set(&mut cx, "subscribe", b)?;
+                                            }
+                                        },
+                                        RpcEvent::Block(block) => {
+                                            let s = cx.string("block");
+                                            obj.set(&mut cx, "type", s)?;
+                                            if let Some(block) = block {
+                                                let block = signed_block_to_js!(cx, block);
+                                                obj.set(&mut cx, "data", block)?;
+                                            } else {
+                                                let b = cx.boolean(true);
+                                                obj.set(&mut cx, "subscribe", b)?;
+                                            }
+                                        }
+                                    }
+                                    Some((msg_type, Some(obj)))
                                 }
                             }
                         } else {

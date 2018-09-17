@@ -15,7 +15,7 @@ mod crypto;
 use crypto::*;
 
 #[macro_use] mod tx;
-mod block;
+#[macro_use] mod block;
 
 mod net;
 use net::*;

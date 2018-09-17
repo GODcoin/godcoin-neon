@@ -97,9 +97,9 @@ declare_types! {
             });
 
             let obj = cx.this();
-            (*obj).set(&mut cx, "amount", amt)?;
-            (*obj).set(&mut cx, "decimals", dec)?;
-            (*obj).set(&mut cx, "symbol", symbol)?;
+            obj.set(&mut cx, "amount", amt)?;
+            obj.set(&mut cx, "decimals", dec)?;
+            obj.set(&mut cx, "symbol", symbol)?;
 
             Ok(Some(obj.upcast()))
         }

@@ -38,7 +38,7 @@ declare_types! {
             }
 
             let obj = cx.this();
-            (*obj).set(&mut cx, "buffer", buf)?;
+            obj.set(&mut cx, "buffer", buf)?;
 
             Ok(Some(obj.upcast()))
         }

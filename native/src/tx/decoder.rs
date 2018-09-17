@@ -11,13 +11,13 @@ macro_rules! tx_variant_to_js {
 			let obj = $cx.empty_object();
 			{
 				let tx_type = $cx.number($tx.tx_type as u8);
-				(*obj).set(&mut $cx, "tx_type", tx_type)?;
+				obj.set(&mut $cx, "tx_type", tx_type)?;
 
 				let timestamp = $cx.number($tx.timestamp);
-				(*obj).set(&mut $cx, "timestamp", timestamp)?;
+				obj.set(&mut $cx, "timestamp", timestamp)?;
 
 				let fee = asset_to_js!($cx, $tx.fee);
-				(*obj).set(&mut $cx, "fee", fee)?;
+				obj.set(&mut $cx, "fee", fee)?;
 
 				let arr = {
 					let mut arr = $cx.empty_array();
@@ -33,13 +33,13 @@ macro_rules! tx_variant_to_js {
 					}
 					arr
 				};
-				(*obj).set(&mut $cx, "signature_pairs", arr)?;
+				obj.set(&mut $cx, "signature_pairs", arr)?;
 			}
 
 			match $tx {
 				TxVariant::RewardTx(tx) => {
 					let to = bytes_to_js!(JsPublicKey, $cx, tx.to.as_bytes());
-					(*obj).set(&mut $cx, "to", to)?;
+					obj.set(&mut $cx, "to", to)?;
 
 					let arr = {
 						let mut arr = $cx.empty_array();
@@ -50,33 +50,33 @@ macro_rules! tx_variant_to_js {
 						}
 						arr
 					};
-					(*obj).set(&mut $cx, "rewards", arr)?;
+					obj.set(&mut $cx, "rewards", arr)?;
 				},
 				TxVariant::BondTx(tx) => {
 					let minter = bytes_to_js!(JsPublicKey, $cx, tx.minter.as_bytes());
-					(*obj).set(&mut $cx, "minter", minter)?;
+					obj.set(&mut $cx, "minter", minter)?;
 
 					let staker = bytes_to_js!(JsPublicKey, $cx, tx.staker.as_bytes());
-					(*obj).set(&mut $cx, "staker", staker)?;
+					obj.set(&mut $cx, "staker", staker)?;
 
 					let stake_amt = asset_to_js!($cx, tx.stake_amt);
-					(*obj).set(&mut $cx, "stake_amt", stake_amt)?;
+					obj.set(&mut $cx, "stake_amt", stake_amt)?;
 
 					let bond_fee = asset_to_js!($cx, tx.bond_fee);
-					(*obj).set(&mut $cx, "bond_fee", bond_fee)?;
+					obj.set(&mut $cx, "bond_fee", bond_fee)?;
 				},
 				TxVariant::TransferTx(tx) => {
 					let from = bytes_to_js!(JsPublicKey, $cx, tx.from.as_bytes());
-					(*obj).set(&mut $cx, "from", from)?;
+					obj.set(&mut $cx, "from", from)?;
 
 					let to = bytes_to_js!(JsPublicKey, $cx, tx.to.as_bytes());
-					(*obj).set(&mut $cx, "to", to)?;
+					obj.set(&mut $cx, "to", to)?;
 
 					let amt = asset_to_js!($cx, tx.amount);
-					(*obj).set(&mut $cx, "amount", amt)?;
+					obj.set(&mut $cx, "amount", amt)?;
 
 					let memo = bytes_to_js!($cx, &tx.memo);
-					(*obj).set(&mut $cx, "memo", memo)?;
+					obj.set(&mut $cx, "memo", memo)?;
 				}
 			}
 			obj
