@@ -61,6 +61,12 @@ pub fn encode(mut cx: FunctionContext) -> JsResult<JsValue> {
                 };
                 Some(RpcMsg::Handshake(peer_type))
             },
+            t if t == RpcMsgType::Broadcast as i8 => {
+                let obj = obj.get(&mut cx, "req")?
+                                .downcast_or_throw::<JsObject, _>(&mut cx)?;
+                let tx = read_js_obj_to_tx!(cx, obj);
+                Some(RpcMsg::Broadcast(tx))
+            },
             t if t == RpcMsgType::Properties as i8 => {
                 let obj = obj.get(&mut cx, "res")?;
                 let props = if obj.is_a::<JsObject>() {
