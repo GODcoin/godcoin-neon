@@ -14,7 +14,7 @@ it('should encode and decode tx events', () => {
     let data = {
         id: 15,
         msg_type: RpcMsgType.EVENT,
-        data: {
+        req: {
             type: RpcEventType.TX,
             data: new BondTx({
                 timestamp: new Date(),
@@ -57,7 +57,7 @@ it('should encode and decode block events', () => {
     const data = {
         id: 15,
         msg_type: RpcMsgType.EVENT,
-        data: {
+        req: {
             type: RpcEventType.BLOCK,
             data: genesisBlock
         }

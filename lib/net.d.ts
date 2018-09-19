@@ -21,30 +21,28 @@ export enum PeerType {
 export class RpcCodec {
   readonly buffer: Buffer;
 
-  encode(obj: RpcPayload<RpcMsg>): Buffer;
+  encode(obj: RpcPayload): Buffer;
 
   update(buf: Buffer): void;
-  decode(): RpcPayload<RpcMsg>;
+  decode(): RpcPayload;
 }
 
-export interface RpcPayload<T extends RpcMsg> {
+export interface RpcPayload {
   id: number;
-  msg_type?: RpcMsgType;
-  data?: T;
+  msg_type: RpcMsgType;
+  req?: any;
+  res?: any;
 }
 
-export interface RpcMsg {}
-
-export interface RpcMsgHandshake extends RpcMsg {
+export interface RpcMsgReqHandshake {
   peer_type: PeerType;
 }
 
-export interface RpcMsgProperties extends RpcMsg {
+export interface RpcMsgResProperties {
   height: number;
 }
 
-export interface RpcMsgEvent extends RpcMsg {
+export interface RpcMsgEvent {
   type: RpcEventType;
-  subscribe?: boolean;
-  data?: Tx | SignedBlock;
+  data: Tx | SignedBlock;
 }

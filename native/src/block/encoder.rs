@@ -83,7 +83,7 @@ macro_rules! read_js_obj_to_signed_block {
             let block = read_js_obj_to_block!($cx, $obj);
             let sig_pair = $obj.get(&mut $cx, "sig_pair")?
                                     .downcast_or_throw::<JsArray, _>(&mut $cx)?;
-            let sig_pair = js_sigpair_to_rs!($cx, sig_pair);
+            let sig_pair = js_obj_to_sigpair!($cx, sig_pair);
             SignedBlock {
                 base: block,
                 sig_pair

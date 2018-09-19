@@ -47,7 +47,7 @@ macro_rules! read_js_obj_to_tx {
 					for i in 0..sigs.len() {
 						let arr = sigs.get(&mut $cx, i)?
 										.downcast_or_throw::<JsArray, _>(&mut $cx)?;
-						let pair = js_sigpair_to_rs!($cx, arr);
+						let pair = js_obj_to_sigpair!($cx, arr);
 						vec.push(pair);
 					}
 					vec

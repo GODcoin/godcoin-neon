@@ -7,7 +7,6 @@ use std::error::Error;
 use neon::prelude::*;
 use bytes::BytesMut;
 
-use super::constants::*;
 use asset::JsAsset;
 
 pub struct BufRpcCodec {
@@ -56,26 +55,15 @@ declare_types! {
                         let id = cx.number(payload.id);
                         let msg = if let Some(msg) = payload.msg {
                             match msg {
-                                RpcMsg::Handshake(hs) => {
-                                    let msg_type = cx.number(MsgType::HANDSHAKE as u8);
-                                    let peer_type = cx.number(hs.peer_type as u8);
+                                RpcMsg::Error(err) => {
+                                    let msg_type = cx.number(RpcMsgType::Error as u8);
                                     let obj = cx.empty_object();
-                                    obj.set(&mut cx, "peer_type", peer_type)?;
-                                    Some((msg_type, Some(obj)))
-                                },
-                                RpcMsg::Properties(props) => {
-                                    let msg_type = cx.number(MsgType::PROPERTIES as u8);
-                                    if let Some(props) = props {
-                                       let height = cx.number(props.height as f64);
-                                        let obj = cx.empty_object();
-                                        obj.set(&mut cx, "height", height)?;
-                                        Some((msg_type, Some(obj)))
-                                    } else {
-                                        Some((msg_type, None))
-                                    }
+                                    let err = cx.string(err);
+                                    obj.set(&mut cx, "error", err)?;
+                                    Some((msg_type, RpcVariant::Res(obj)))
                                 },
                                 RpcMsg::Event(event) => {
-                                    let msg_type = cx.number(MsgType::EVENT as u8);
+                                    let msg_type = cx.number(RpcMsgType::Event as u8);
                                     let obj = cx.empty_object();
                                     match event {
                                         RpcEvent::Tx(tx) => {
@@ -91,7 +79,79 @@ declare_types! {
                                             obj.set(&mut cx, "data", block)?;
                                         }
                                     }
-                                    Some((msg_type, Some(obj)))
+                                    Some((msg_type, RpcVariant::Req(obj)))
+                                },
+                                RpcMsg::Handshake(peer_type) => {
+                                    let msg_type = cx.number(RpcMsgType::Handshake as u8);
+                                    let peer_type = cx.number(peer_type as u8);
+                                    let obj = cx.empty_object();
+                                    obj.set(&mut cx, "peer_type", peer_type)?;
+                                    Some((msg_type, RpcVariant::Req(obj)))
+                                },
+                                RpcMsg::Broadcast(tx) => {
+                                    let msg_type = cx.number(RpcMsgType::Broadcast as u8);
+                                    let tx = tx_variant_to_js!(cx, tx);
+                                    Some((msg_type, RpcVariant::Req(tx)))
+                                },
+                                RpcMsg::Properties(rpc) => {
+                                    let msg_type = cx.number(RpcMsgType::Properties as u8);
+                                    let obj = cx.empty_object();
+                                    if let Some(props) = rpc.response() {
+                                        let height = cx.number(props.height as f64);
+                                        obj.set(&mut cx, "height", height)?;
+                                        Some((msg_type, RpcVariant::Res(obj)))
+                                    } else {
+                                        Some((msg_type, RpcVariant::Req(obj)))
+                                    }
+                                },
+                                RpcMsg::Block(rpc) => {
+                                    let msg_type = cx.number(RpcMsgType::Block as u8);
+                                    match rpc {
+                                        RpcVariant::Req(height) => {
+                                            let height = cx.number(height as f64);
+                                            let obj = cx.empty_object();
+                                            obj.set(&mut cx, "height", height)?;
+                                            Some((msg_type, RpcVariant::Req(obj)))
+                                        },
+                                        RpcVariant::Res(block) => {
+                                            let block = signed_block_to_js!(cx, block);
+                                            Some((msg_type, RpcVariant::Res(block)))
+                                        }
+                                    }
+                                },
+                                RpcMsg::Balance(rpc) => {
+                                    let msg_type = cx.number(RpcMsgType::Balance as u8);
+                                    match rpc {
+                                        RpcVariant::Req(addr) => {
+                                            let addr = bytes_to_js!(JsPublicKey, cx, addr.as_bytes());
+                                            Some((msg_type, RpcVariant::Req(addr.upcast())))
+                                        },
+                                        RpcVariant::Res(bal) => {
+                                            let gold = asset_to_js!(cx, bal.gold);
+                                            let silver = asset_to_js!(cx, bal.silver);
+                                            let arr = cx.empty_array();
+                                            arr.set(&mut cx, 0, gold)?;
+                                            arr.set(&mut cx, 1, silver)?;
+                                            Some((msg_type, RpcVariant::Res(arr.upcast())))
+                                        }
+                                    }
+                                },
+                                RpcMsg::TotalFee(rpc) => {
+                                    let msg_type = cx.number(RpcMsgType::TotalFee as u8);
+                                    match rpc {
+                                        RpcVariant::Req(addr) => {
+                                            let addr = bytes_to_js!(JsPublicKey, cx, addr.as_bytes());
+                                            Some((msg_type, RpcVariant::Req(addr.upcast())))
+                                        },
+                                        RpcVariant::Res(bal) => {
+                                            let gold = asset_to_js!(cx, bal.gold);
+                                            let silver = asset_to_js!(cx, bal.silver);
+                                            let arr = cx.empty_array();
+                                            arr.set(&mut cx, 0, gold)?;
+                                            arr.set(&mut cx, 1, silver)?;
+                                            Some((msg_type, RpcVariant::Res(arr.upcast())))
+                                        }
+                                    }
                                 }
                             }
                         } else {
@@ -103,9 +163,17 @@ declare_types! {
                         if let Some(msg) = msg {
                             let (msg_type, data) = msg;
                             obj.set(&mut cx, "msg_type", msg_type)?;
-                            if let Some(data) = data {
-                                obj.set(&mut cx, "data", data)?;
+                            match data {
+                                RpcVariant::Req(data) => {
+                                    obj.set(&mut cx, "req", data)?;
+                                },
+                                RpcVariant::Res(data) => {
+                                    obj.set(&mut cx, "res", data)?;
+                                }
                             }
+                        } else {
+                            let num = cx.number(-1);
+                            obj.set(&mut cx, "msg_type", num)?;
                         }
                         Ok(obj.upcast())
                     } else {

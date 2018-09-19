@@ -31,12 +31,12 @@ it('should decode multipart frame', () => {
     data = codec.decode();
     expect(data).to.be.undefined;
 
-    codec.update(Buffer.from([0x00, 0x01]));
+    codec.update(Buffer.from([0x02, 0x01]));
     data = codec.decode();
     expect(data).to.eql({
         id: 100,
         msg_type: RpcMsgType.HANDSHAKE,
-        data: {
+        req: {
             peer_type: PeerType.WALLET
         }
     });
@@ -46,26 +46,26 @@ it('should decode multiple multipart frames', () => {
     const codec = new RpcCodec();
 
     codec.update(Buffer.from([
-        0x00, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x64, 0x00, 0x00, // Frame 1
+        0x00, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x64, 0x02, 0x00, // Frame 1
         0x00, 0x00, 0x00, 0x0A, 0x00, 0x00 // Part of frame 2
     ]));
     let data = codec.decode();
     expect(data).to.eql({
         id: 100,
         msg_type: RpcMsgType.HANDSHAKE,
-        data: {
+        req: {
             peer_type: PeerType.NODE
         }
     });
 
     codec.update(Buffer.from([
-        0x00, 0x01, 0x00, 0x01 // End of frame 2
+        0x00, 0x01, 0x02, 0x01 // End of frame 2
     ]));
     data = codec.decode();
     expect(data).to.eql({
         id: 1,
         msg_type: RpcMsgType.HANDSHAKE,
-        data: {
+        req: {
             peer_type: PeerType.WALLET
         }
     });
@@ -75,14 +75,14 @@ it('should decode multiple frames in a single chunk', () => {
     const codec = new RpcCodec();
 
     codec.update(Buffer.from([
-        0x00, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, // Frame 1
-        0x00, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x02, 0x00, 0x01, // Frame 2
+        0x00, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x01, 0x02, 0x00, // Frame 1
+        0x00, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x02, 0x02, 0x01, // Frame 2
     ]));
 
     expect(codec.decode()).to.eql({
         id: 1,
         msg_type: RpcMsgType.HANDSHAKE,
-        data: {
+        req: {
             peer_type: PeerType.NODE
         }
     });
@@ -90,7 +90,7 @@ it('should decode multiple frames in a single chunk', () => {
     expect(codec.decode()).to.eql({
         id: 2,
         msg_type: RpcMsgType.HANDSHAKE,
-        data: {
+        req: {
             peer_type: PeerType.WALLET
         }
     });

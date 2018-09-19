@@ -18,7 +18,7 @@ macro_rules! bytes_to_js {
 	};
 }
 
-macro_rules! js_sigpair_to_rs {
+macro_rules! js_obj_to_sigpair {
 	($cx:expr, $arr:expr) => {
 		{
 			let key = $arr.get(&mut $cx, 0)?
