@@ -2,10 +2,15 @@ import { SignedBlock } from './block';
 import { Tx } from './tx';
 
 export enum RpcMsgType {
-  NONE = 0,
-  HANDSHAKE = 1,
-  PROPERTIES = 2,
-  EVENT = 3
+  NONE = -1,
+  ERROR = 0,
+  EVENT = 1,
+  HANDSHAKE = 2,
+  BROADCAST = 3,
+  PROPERTIES = 4,
+  BLOCK = 5,
+  BALANCE = 6,
+  TOTAL_FEE = 7
 }
 
 export enum RpcEventType {
