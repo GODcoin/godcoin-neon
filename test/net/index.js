@@ -15,7 +15,11 @@ describe('Event', () => {
 
 describe('Broadcast', () => {
     require('./test_broadcast');
-})
+});
+
+describe('Block', () => {
+    require('./test_block');
+});
 
 it('should decode multipart frame', () => {
     const codec = new RpcCodec();

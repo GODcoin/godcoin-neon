@@ -2,38 +2,26 @@ const { expect } = require('chai');
 const {
     RpcCodec,
     RpcMsgType,
-    RpcEventType,
     PrivateKey,
-    Block,
     RewardTx,
-    BondTx,
+    Block,
     Asset
 } = require('../../lib');
 
-it('should encode and decode tx events', () => {
-    let data = {
-        id: 15,
-        msg_type: RpcMsgType.EVENT,
+it('should encode and decode block request frames', () => {
+    const data = {
+        id: 0,
+        msg_type: RpcMsgType.BLOCK,
         req: {
-            type: RpcEventType.TX,
-            data: new BondTx({
-                timestamp: new Date(),
-                fee: Asset.EMPTY_GOLD,
-                minter: PrivateKey.genKeyPair()[0],
-                staker: PrivateKey.genKeyPair()[0],
-                bond_fee: Asset.EMPTY_GOLD,
-                stake_amt: Asset.EMPTY_GOLD,
-                signature_pairs: []
-            })
+            height: 10
         }
     };
-
     const codec = new RpcCodec();
     codec.update(codec.encode(data));
-    expect(data).to.eql(codec.decode());
+    expect(codec.decode()).to.eql(data);
 });
 
-it('should encode and decode block events', () => {
+it('should encode and decode block response frames', () => {
     const keys = PrivateKey.genKeyPair();
     const genesisTs = new Date();
     const genesisBlock = new Block({
@@ -55,14 +43,21 @@ it('should encode and decode block events', () => {
     }).sign(keys);
 
     const data = {
-        id: 15,
-        msg_type: RpcMsgType.EVENT,
-        req: {
-            type: RpcEventType.BLOCK,
-            data: genesisBlock
-        }
+        id: 100,
+        msg_type: RpcMsgType.BLOCK,
+        res: genesisBlock
     };
+    const codec = new RpcCodec();
+    codec.update(codec.encode(data));
+    expect(codec.decode()).to.eql(data);
+});
 
+it('should encode and decode empty block response frames', () => {
+    const data = {
+        id: 100,
+        msg_type: RpcMsgType.BLOCK,
+        res: undefined
+    };
     const codec = new RpcCodec();
     codec.update(codec.encode(data));
     expect(codec.decode()).to.eql(data);

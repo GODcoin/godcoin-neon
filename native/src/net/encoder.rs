@@ -88,10 +88,14 @@ pub fn encode(mut cx: FunctionContext) -> JsResult<JsValue> {
                                     .value() as u64;
                     Some(RpcMsg::Block(RpcVariant::Req(height)))
                 } else {
-                    let res = obj.get(&mut cx, "res")?
-                                    .downcast_or_throw::<JsObject, _>(&mut cx)?;
-                    let block = read_js_obj_to_signed_block!(cx, res);
-                    Some(RpcMsg::Block(RpcVariant::Res(block)))
+                    let res = obj.get(&mut cx, "res")?;
+                    if res.is_a::<JsObject>() {
+                        let res = res.downcast_or_throw::<JsObject, _>(&mut cx)?;
+                        let block = read_js_obj_to_signed_block!(cx, res);
+                        Some(RpcMsg::Block(RpcVariant::Res(Some(block))))
+                    } else {
+                        Some(RpcMsg::Block(RpcVariant::Res(None)))
+                    }
                 }
             },
             t if t == RpcMsgType::Balance as i8 => {

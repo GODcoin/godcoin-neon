@@ -114,8 +114,13 @@ declare_types! {
                                             Some((msg_type, RpcVariant::Req(obj)))
                                         },
                                         RpcVariant::Res(block) => {
-                                            let block = signed_block_to_js!(cx, block);
-                                            Some((msg_type, RpcVariant::Res(block)))
+                                            if let Some(block) = block {
+                                                let block = signed_block_to_js!(cx, block);
+                                                Some((msg_type, RpcVariant::Res(block)))
+                                            } else {
+                                                let obj = cx.empty_object();
+                                                Some((msg_type, RpcVariant::Res(obj)))
+                                            }
                                         }
                                     }
                                 },
