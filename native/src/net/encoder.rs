@@ -23,9 +23,11 @@ pub fn encode(mut cx: FunctionContext) -> JsResult<JsValue> {
             t if t == -1 => None,
             t if t == RpcMsgType::Error as i8 => {
                 let obj = obj.get(&mut cx, "res")?
-                                .downcast_or_throw::<JsString, _>(&mut cx)?
-                                .value();
-                Some(RpcMsg::Error(obj))
+                                .downcast_or_throw::<JsObject, _>(&mut cx)?;
+                let s = obj.get(&mut cx, "error")?
+                            .downcast_or_throw::<JsString, _>(&mut cx)?
+                            .value();
+                Some(RpcMsg::Error(s))
             }
             t if t == RpcMsgType::Event as i8 => {
                 let obj = obj.get(&mut cx, "req")?

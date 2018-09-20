@@ -19,7 +19,7 @@ neon-build = "0.2.0"
 [dependencies]
 bytes = "0.4.9"
 futures = "0.1.24"
-godcoin = { git = "https://github.com/GODcoin/godcoin-rs.git", rev = "091e419" }
+godcoin = { git = "https://github.com/GODcoin/godcoin-rs.git", rev = "fbb4416" }
 parking_lot = "0.6.4"
 log = "0.4.4"
 neon = "0.2.0"

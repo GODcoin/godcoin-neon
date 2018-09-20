@@ -23,7 +23,11 @@ describe('Block', () => {
 
 describe('Properties', () => {
     require('./test_properties');
-})
+});
+
+describe('Error', () => {
+    require('./test_error');
+});
 
 it('should decode multipart frame', () => {
     const codec = new RpcCodec();
