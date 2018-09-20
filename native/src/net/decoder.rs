@@ -99,6 +99,15 @@ declare_types! {
                                     if let Some(props) = rpc.response() {
                                         let height = cx.number(props.height as f64);
                                         obj.set(&mut cx, "height", height)?;
+                                        {
+                                            let gold = asset_to_js!(cx, props.token_supply.gold);
+                                            let silver = asset_to_js!(cx, props.token_supply.silver);
+                                            let arr = cx.empty_array();
+                                            arr.set(&mut cx, 0, gold)?;
+                                            arr.set(&mut cx, 1, silver)?;
+                                            obj.set(&mut cx, "token_supply", arr)?;
+                                        }
+
                                         Some((msg_type, RpcVariant::Res(obj)))
                                     } else {
                                         Some((msg_type, RpcVariant::Req(obj)))

@@ -71,9 +71,29 @@ pub fn encode(mut cx: FunctionContext) -> JsResult<JsValue> {
                 let obj = obj.get(&mut cx, "res")?;
                 let props = if obj.is_a::<JsObject>() {
                     let obj = obj.downcast_or_throw::<JsObject, _>(&mut cx)?;
-                    let height = obj.get(&mut cx, "msg_type")?
+                    let height = obj.get(&mut cx, "height")?
                                     .downcast_or_throw::<JsNumber, _>(&mut cx)?.value() as u64;
-                    RpcMsg::Properties(RpcVariant::Res(Properties { height }))
+                    let token_supply = {
+                        let bal = obj.get(&mut cx, "token_supply")?
+                                    .downcast_or_throw::<JsArray, _>(&mut cx)?;
+                        let gold = {
+                            let asset = bal.get(&mut cx, 0)?.downcast_or_throw::<JsAsset, _>(&mut cx)?;
+                            let guard = cx.lock();
+                            let asset = asset.borrow(&guard);
+                            asset.clone()
+                        };
+                        let silver = {
+                            let asset = bal.get(&mut cx, 1)?.downcast_or_throw::<JsAsset, _>(&mut cx)?;
+                            let guard = cx.lock();
+                            let asset = asset.borrow(&guard);
+                            asset.clone()
+                        };
+                        Balance { gold, silver }
+                    };
+                    RpcMsg::Properties(RpcVariant::Res(Properties {
+                        height,
+                        token_supply
+                    }))
                 } else {
                     RpcMsg::Properties(RpcVariant::Req(()))
                 };

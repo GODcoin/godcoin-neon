@@ -21,6 +21,10 @@ describe('Block', () => {
     require('./test_block');
 });
 
+describe('Properties', () => {
+    require('./test_properties');
+})
+
 it('should decode multipart frame', () => {
     const codec = new RpcCodec();
 

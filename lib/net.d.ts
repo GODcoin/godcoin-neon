@@ -1,4 +1,5 @@
 import { SignedBlock } from './block';
+import { Asset } from './asset';
 import { Tx } from './tx';
 
 export enum RpcMsgType {
@@ -45,6 +46,7 @@ export interface RpcMsgReqHandshake {
 
 export interface RpcMsgResProperties {
   height: number;
+  token_supply: [Asset /* gold */, Asset /* silver */];
 }
 
 export interface RpcMsgEvent {
