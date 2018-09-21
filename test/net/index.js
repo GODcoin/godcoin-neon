@@ -29,6 +29,10 @@ describe('Error', () => {
     require('./test_error');
 });
 
+describe('Total Fee', () => {
+    require('./test_total_fee');
+});
+
 it('should decode multipart frame', () => {
     const codec = new RpcCodec();
 
