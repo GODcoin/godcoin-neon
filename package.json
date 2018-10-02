@@ -10,12 +10,15 @@
   },
   "author": "samrg472 <samrg472@gmail.com>",
   "license": "MIT",
-  "dependencies": {
-    "neon-cli": "^0.2.0"
-  },
   "scripts": {
-    "install": "neon build --release",
+    "install": "per-env",
+    "install:development": "neon build",
+    "install:production": "neon build --release",
     "test": "neon build && mocha test/index.js"
+  },
+  "dependencies": {
+    "neon-cli": "^0.2.0",
+    "per-env": "^1.0.2"
   },
   "devDependencies": {
     "bs58": "^4.0.1",
