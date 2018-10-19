@@ -40,13 +40,13 @@ pub fn encode(mut cx: FunctionContext) -> JsResult<JsValue> {
                         let data = obj.get(&mut cx, "data")?
                                         .downcast_or_throw::<JsObject, _>(&mut cx)?;
                         let tx = read_js_obj_to_tx!(cx, data);
-                        Some(RpcMsg::Event(RpcEvent::Tx(tx)))
+                        Some(RpcMsg::Event(Box::new(RpcEvent::Tx(tx))))
                     },
                     "block" => {
                         let data = obj.get(&mut cx, "data")?
                                         .downcast_or_throw::<JsObject, _>(&mut cx)?;
                         let block = read_js_obj_to_signed_block!(cx, data);
-                        Some(RpcMsg::Event(RpcEvent::Block(block)))
+                        Some(RpcMsg::Event(Box::new(RpcEvent::Block(block))))
                     },
                     _ => return cx.throw_error("invalid event type")
                 }
@@ -92,9 +92,27 @@ pub fn encode(mut cx: FunctionContext) -> JsResult<JsValue> {
                         };
                         Balance { gold, silver }
                     };
+                    let network_fee = {
+                        let bal = obj.get(&mut cx, "network_fee")?
+                                    .downcast_or_throw::<JsArray, _>(&mut cx)?;
+                        let gold = {
+                            let asset = bal.get(&mut cx, 0)?.downcast_or_throw::<JsAsset, _>(&mut cx)?;
+                            let guard = cx.lock();
+                            let asset = asset.borrow(&guard);
+                            asset.clone()
+                        };
+                        let silver = {
+                            let asset = bal.get(&mut cx, 1)?.downcast_or_throw::<JsAsset, _>(&mut cx)?;
+                            let guard = cx.lock();
+                            let asset = asset.borrow(&guard);
+                            asset.clone()
+                        };
+                        Balance { gold, silver }
+                    };
                     RpcMsg::Properties(RpcVariant::Res(Properties {
                         height,
-                        token_supply
+                        token_supply,
+                        network_fee
                     }))
                 } else {
                     RpcMsg::Properties(RpcVariant::Req(()))
@@ -108,15 +126,15 @@ pub fn encode(mut cx: FunctionContext) -> JsResult<JsValue> {
                     let height = req.get(&mut cx, "height")?
                                     .downcast_or_throw::<JsNumber, _>(&mut cx)?
                                     .value() as u64;
-                    Some(RpcMsg::Block(RpcVariant::Req(height)))
+                    Some(RpcMsg::Block(Box::new(RpcVariant::Req(height))))
                 } else {
                     let res = obj.get(&mut cx, "res")?;
                     if res.is_a::<JsObject>() {
                         let res = res.downcast_or_throw::<JsObject, _>(&mut cx)?;
                         let block = read_js_obj_to_signed_block!(cx, res);
-                        Some(RpcMsg::Block(RpcVariant::Res(Some(block))))
+                        Some(RpcMsg::Block(Box::new(RpcVariant::Res(Some(block)))))
                     } else {
-                        Some(RpcMsg::Block(RpcVariant::Res(None)))
+                        Some(RpcMsg::Block(Box::new(RpcVariant::Res(None))))
                     }
                 }
             },

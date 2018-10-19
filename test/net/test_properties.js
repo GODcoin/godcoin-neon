@@ -25,6 +25,10 @@ it('should encode and decode property response frames', () => {
             token_supply: [
                 Asset.fromString('100.0000 GOLD'),
                 Asset.fromString('1000.000 SILVER')
+            ],
+            network_fee: [
+                Asset.fromString('0.00000300 GOLD'),
+                Asset.fromString('0.00003000 SILVER')
             ]
         }
     };

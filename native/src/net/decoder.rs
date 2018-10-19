@@ -62,10 +62,10 @@ declare_types! {
                                     obj.set(&mut cx, "error", err)?;
                                     Some((msg_type, RpcVariant::Res(obj)))
                                 },
-                                RpcMsg::Event(event) => {
+                                RpcMsg::Event(evt) => {
                                     let msg_type = cx.number(RpcMsgType::Event as u8);
                                     let obj = cx.empty_object();
-                                    match event {
+                                    match *evt {
                                         RpcEvent::Tx(tx) => {
                                             let s = cx.string("tx");
                                             obj.set(&mut cx, "type", s)?;
@@ -107,15 +107,23 @@ declare_types! {
                                             arr.set(&mut cx, 1, silver)?;
                                             obj.set(&mut cx, "token_supply", arr)?;
                                         }
+                                        {
+                                            let gold = asset_to_js!(cx, props.network_fee.gold);
+                                            let silver = asset_to_js!(cx, props.network_fee.silver);
+                                            let arr = cx.empty_array();
+                                            arr.set(&mut cx, 0, gold)?;
+                                            arr.set(&mut cx, 1, silver)?;
+                                            obj.set(&mut cx, "network_fee", arr)?;
+                                        }
 
                                         Some((msg_type, RpcVariant::Res(obj)))
                                     } else {
                                         Some((msg_type, RpcVariant::Req(obj)))
                                     }
                                 },
-                                RpcMsg::Block(rpc) => {
+                                RpcMsg::Block(var) => {
                                     let msg_type = cx.number(RpcMsgType::Block as u8);
-                                    match rpc {
+                                    match *var {
                                         RpcVariant::Req(height) => {
                                             let height = cx.number(height as f64);
                                             let obj = cx.empty_object();
