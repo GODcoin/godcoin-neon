@@ -47,6 +47,7 @@ export interface RpcMsgReqHandshake {
 export interface RpcMsgResProperties {
   height: number;
   token_supply: [Asset /* gold */, Asset /* silver */];
+  network_fee: [Asset /* gold */, Asset /* silver */];
 }
 
 export interface RpcMsgEvent {
