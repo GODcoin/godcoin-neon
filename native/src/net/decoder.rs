@@ -1,13 +1,13 @@
 use godcoin::tx::TxVariant;
 use godcoin::net::rpc::*;
 use tokio_codec::Decoder;
-use crypto::JsPublicKey;
 use std::cell::RefCell;
 use std::error::Error;
 use neon::prelude::*;
 use bytes::BytesMut;
 
-use asset::JsAsset;
+use crate::crypto::JsPublicKey;
+use crate::asset::JsAsset;
 
 pub struct BufRpcCodec {
     inner: codec::RpcCodec,
@@ -96,7 +96,7 @@ declare_types! {
                                 RpcMsg::Properties(rpc) => {
                                     let msg_type = cx.number(RpcMsgType::Properties as u8);
                                     let obj = cx.empty_object();
-                                    if let Some(props) = rpc.response() {
+                                    if let Some(props) = rpc.res() {
                                         let height = cx.number(props.height as f64);
                                         obj.set(&mut cx, "height", height)?;
                                         {

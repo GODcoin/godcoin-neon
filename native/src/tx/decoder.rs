@@ -2,8 +2,8 @@ use godcoin::tx::TxVariant;
 use neon::prelude::*;
 use std::io::Cursor;
 
-use crypto::JsPublicKey;
-use asset::JsAsset;
+use crate::crypto::JsPublicKey;
+use crate::asset::JsAsset;
 
 macro_rules! tx_variant_to_js {
 	($cx:expr, $tx:expr) => {
@@ -20,7 +20,7 @@ macro_rules! tx_variant_to_js {
 				obj.set(&mut $cx, "fee", fee)?;
 
 				let arr = {
-					let mut arr = $cx.empty_array();
+					let arr = $cx.empty_array();
 					let len = $tx.signature_pairs.len();
 					for i in 0..len {
 						let pair = &$tx.signature_pairs[i];
@@ -42,7 +42,7 @@ macro_rules! tx_variant_to_js {
 					obj.set(&mut $cx, "to", to)?;
 
 					let arr = {
-						let mut arr = $cx.empty_array();
+						let arr = $cx.empty_array();
 						let len = tx.rewards.len();
 						for i in 0..len {
 							let a = asset_to_js!($cx, tx.rewards[i]);

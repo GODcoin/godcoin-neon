@@ -5,6 +5,7 @@ authors = ["samrg472 <samrg472@gmail.com>"]
 license = "MIT"
 build = "build.rs"
 exclude = ["artifacts.json", "index.node"]
+edition = "2018"
 
 [lib]
 name = "neon"
@@ -19,7 +20,7 @@ neon-build = "0.2.0"
 [dependencies]
 bytes = "0.4.9"
 futures = "0.1.24"
-godcoin = { git = "https://github.com/GODcoin/godcoin-rs.git", rev = "40e0e37" }
+godcoin = { git = "https://github.com/GODcoin/godcoin-rs.git", rev = "fae4332" }
 parking_lot = "0.6.4"
 log = "0.4.4"
 neon = "0.2.0"

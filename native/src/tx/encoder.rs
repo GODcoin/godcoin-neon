@@ -4,8 +4,8 @@ use godcoin::asset::Asset;
 use neon::prelude::*;
 use godcoin::tx::*;
 
-use crypto::JsPublicKey;
-use asset::JsAsset;
+use crate::crypto::JsPublicKey;
+use crate::asset::JsAsset;
 
 macro_rules! read_js_obj_to_tx {
 	($cx:expr, $obj:expr) => {

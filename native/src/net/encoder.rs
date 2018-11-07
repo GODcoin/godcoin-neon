@@ -9,8 +9,8 @@ use neon::prelude::*;
 use bytes::BytesMut;
 use godcoin::tx::*;
 
-use crypto::JsPublicKey;
-use asset::JsAsset;
+use crate::crypto::JsPublicKey;
+use crate::asset::JsAsset;
 
 pub fn encode(mut cx: FunctionContext) -> JsResult<JsValue> {
     let obj = cx.argument::<JsObject>(0)?;

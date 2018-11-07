@@ -214,7 +214,7 @@ pub fn private_key_from_wif(mut cx: FunctionContext) -> JsResult<JsArray> {
                 JsPrivateKey::new(&mut cx, vec![seed_buf, priv_buf]).unwrap()
             };
 
-            let mut arr = JsArray::new(&mut cx, 2);
+            let arr = JsArray::new(&mut cx, 2);
             arr.set(&mut cx, 0, pub_key)?;
             arr.set(&mut cx, 1, priv_key)?;
             Ok(arr)

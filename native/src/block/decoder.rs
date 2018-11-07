@@ -3,8 +3,8 @@ use godcoin::tx::TxVariant;
 use neon::prelude::*;
 use std::io::Cursor;
 
-use crypto::JsPublicKey;
-use asset::JsAsset;
+use crate::crypto::JsPublicKey;
+use crate::asset::JsAsset;
 
 macro_rules! signed_block_to_js {
     ($cx:expr, $block:expr) => {

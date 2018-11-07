@@ -1,24 +1,17 @@
 #[macro_use] extern crate neon;
-extern crate tokio_codec;
-extern crate sodiumoxide;
-extern crate godcoin;
-extern crate futures;
-extern crate bytes;
-
 use neon::prelude::*;
 
-#[macro_use] mod util;
 #[macro_use] mod asset;
-use asset::*;
+#[macro_use] mod block;
+#[macro_use] mod util;
+#[macro_use] mod tx;
 
 mod crypto;
-use crypto::*;
-
-#[macro_use] mod tx;
-#[macro_use] mod block;
-
 mod net;
-use net::*;
+
+use crate::crypto::*;
+use crate::asset::*;
+use crate::net::*;
 
 fn init(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     if godcoin::init().is_ok() { Ok(JsUndefined::new()) }
