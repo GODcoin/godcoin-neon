@@ -1,10 +1,10 @@
 #[macro_use] extern crate neon;
 use neon::prelude::*;
 
-#[macro_use] mod asset;
-#[macro_use] mod block;
 #[macro_use] mod util;
+#[macro_use] mod asset;
 #[macro_use] mod tx;
+#[macro_use] mod block;
 
 mod crypto;
 mod net;
