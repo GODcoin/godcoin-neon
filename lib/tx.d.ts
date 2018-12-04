@@ -14,7 +14,7 @@ export interface TxData {
 }
 
 export class Tx implements TxData {
-    static decodeWithSigs<T extends Tx>(buffer): T|null;
+    static decodeWithSigs<T extends Tx>(buffer: Buffer): T|null;
 
     timestamp: Date;
     fee: Asset;
