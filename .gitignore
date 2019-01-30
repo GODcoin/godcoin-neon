@@ -3,7 +3,6 @@
 
 native/index.node
 native/artifacts.json
-Cargo.lock
 target
 
 node_modules
